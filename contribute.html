@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contribute | My AUS Wiki</title>
+    <link rel="stylesheet" href="style.css">
+    <style> 
+        /* CSS nội bộ contribute.html giữ nguyên */
+        .contribution-section { background-color: #2C3A47; border: 1px solid #7A287E; border-radius: 5px; padding: 15px 20px; margin-bottom: 20px; }
+        .contribution-section h3 { color: #E6244C; }
+        .contribution-section ul { list-style-type: disc; padding-left: 30px; }
+    </style>
+</head>
+<body>
+    <header><h1>Dusttale</h1></header>
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="aus.html">AU List</a></li>
+            <li><a href="create-aus.html">Create AU</a></li>
+            <li><a href="characters.html">Characters</a></li>
+            <li><a href="contribute.html" class="active">Contribute</a></li>
+             </ul>
+    </nav>
+    <main>
+        <h2>Contribute to the Wiki</h2>
+         <p>This wiki is a community project...</p>
+         <section class="contribution-section">...</section>
+         <section class="contribution-section">...</section>
+    </main>
+    <footer>
+        <p>&copy; 2025 Dust!Sans [Elliot Davidson]. All rights reserved.</p>
+        <p>Website developed based on...</p>
+    </footer>
+
+    <script>
+         function getCurrentUser() { /*...*/ return localStorage.getItem('currentUser'); }
+         function logoutUser() { /*...*/ localStorage.removeItem('currentUser'); localStorage.removeItem('token'); window.location.reload(); }
+         function updateNavBar() { /*...*/ 
+             const user = getCurrentUser(); const navUl = document.querySelector('nav ul');
+             const authItems = navUl.querySelectorAll('.auth-item'); authItems.forEach(item => item.remove());
+             if (user) {
+                 const userDropdown = document.createElement('li'); userDropdown.className = 'auth-item dropdown';
+                 const userNameLink = document.createElement('a'); userNameLink.href = "#"; userNameLink.textContent = user;
+                 userNameLink.onclick = function(event) { event.preventDefault(); toggleUserMenu(); };
+                 userDropdown.appendChild(userNameLink);
+                 const dropdownContent = document.createElement('ul'); dropdownContent.className = 'dropdown-content'; dropdownContent.id = 'user-menu-content';
+                 const logoutItem = document.createElement('li'); logoutItem.innerHTML = `<a href="#" onclick="logoutUser()">Logout</a>`; dropdownContent.appendChild(logoutItem);
+                 userDropdown.appendChild(dropdownContent); navUl.appendChild(userDropdown);
+             } else {
+                 const loginItem = document.createElement('li'); loginItem.className = 'auth-item';
+                 loginItem.innerHTML = `<li><a href="auth.html">Login / Register</a></li>`; navUl.appendChild(loginItem);
+             }
+         }
+         function toggleUserMenu() { /*...*/ const menuContent = document.getElementById('user-menu-content'); if (menuContent) { menuContent.classList.toggle('show'); } }
+         window.onclick = function(event) { /*...*/ if (!event.target.matches('.dropdown > a')) { const dropdowns = document.getElementsByClassName("dropdown-content"); for (let i = 0; i < dropdowns.length; i++) { if (dropdowns[i].classList.contains('show')) { dropdowns[i].classList.remove('show'); } } } }
+         window.logoutUser = logoutUser;
+         document.addEventListener('DOMContentLoaded', updateNavBar); // Gọi khi trang tải xong
+     </script>
+</body>
+</html>

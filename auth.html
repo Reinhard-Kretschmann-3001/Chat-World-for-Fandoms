@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login / Register | My AUS Wiki</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { display: flex; flex-direction: column; min-height: 100vh; margin: 0; padding: 0; background-color: #444C5C;} /* Thêm màu nền body */
+        main { flex-grow: 1; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .auth-container { max-width: 400px; width: 100%; padding: 30px; background-color: #2C3A47; border: 2px solid #7A287E; border-radius: 10px; box-shadow: 0 0 20px rgba(122, 40, 126, 0.7);}
+        .auth-container h2 { text-align: center; color: #E6244C; border-bottom: 2px solid #7A287E; padding-bottom: 10px; margin-top:0; margin-bottom: 25px; }
+        .auth-form label { display: block; margin-bottom: 8px; font-weight: bold; color: #F0F0F0; font-size: 0.95em; }
+        .auth-form input { width: 100%; padding: 12px; margin-bottom: 18px; background: #444C5C; border: 1px solid #7A287E; color: #F0F0F0; border-radius: 5px; box-sizing: border-box; font-size: 1em; }
+        .auth-form button { width: 100%; background: #7A287E; border: none; color: #fff; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1.1em; transition: background-color 0.2s, box-shadow 0.2s; margin-top: 10px;}
+        .auth-form button:hover { background: #E6244C; box-shadow: 0 0 10px rgba(230, 36, 76, 0.8); }
+        .toggle-link { text-align: center; margin-top: 20px; font-size: 0.9em; color: #A4B0BE;}
+        .toggle-link a { color: #E6244C; cursor: pointer; text-decoration: underline; font-weight: bold;}
+        #register-form { display: none; }
+        #auth-message { margin-top: 20px; padding: 12px; border-radius: 5px; text-align: center; font-weight: bold; font-size: 1em;}
+        .success { color: #FFF; background: #574B90; border: 1px solid #7A287E;} 
+        .error { color: #FFF; background: #8B0000; border: 1px solid #E6244C;} 
+        footer { background-color: #2C3A47; border-top: 1px solid #7A287E; color: #A4B0BE; padding: 15px; text-align: center; font-size: 0.9em;}
+    </style>
+</head>
+<body>
+    <main>
+      <div class="auth-container">
+        <form id="login-form" class="auth-form">
+          <h2>Login to Wiki</h2>
+          <label for="login-username">Username</label>
+          <input type="text" id="login-username" required autocomplete="username">
+          <label for="login-password">Password</label>
+          <input type="password" id="login-password" required autocomplete="current-password">
+          <button type="submit">Login</button>
+          <div class="toggle-link">
+            Don't have an account? <a onclick="toggleForm('register')">Register here</a>.
+          </div>
+        </form>
+        <form id="register-form" class="auth-form">
+          <h2>Register for Wiki</h2>
+          <label for="reg-username">Username</label>
+          <input type="text" id="reg-username" required autocomplete="username">
+          <label for="reg-password">Password</label>
+          <input type="password" id="reg-password" required autocomplete="new-password">
+          <button type="submit">Register</button>
+          <div class="toggle-link">
+            Already have an account? <a onclick="toggleForm('login')">Login here</a>.
+          </div>
+        </form>
+        <div id="auth-message"></div>
+      </div>
+    </main>
+    <footer>
+        <p>&copy; 2025 Dust!Sans [Elliot Davidson]. All rights reserved.</p>
+    </footer>
+           <script>
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        const messageDiv = document.getElementById('auth-message');
+        // !!! Đảm bảo URL này chính xác !!!
+        const BACKEND_URL = 'https://dust-aus-backend.onrender.com'; 
+
+        // Hàm chuyển đổi form (giữ nguyên)
+        function toggleForm(mode) {
+            messageDiv.textContent = ''; messageDiv.className = '';
+            if (mode === 'login') {
+                loginForm.style.display = 'block'; registerForm.style.display = 'none';
+            } else {
+                loginForm.style.display = 'none'; registerForm.style.display = 'block';
+            }
+        }
+        // Hàm hiển thị thông báo (giữ nguyên)
+        function displayMessage(text, isSuccess) {
+            messageDiv.textContent = text; messageDiv.className = isSuccess ? 'success' : 'error';
+        }
+
+        // === Logic Đăng nhập Gọi API Thật ===
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault(); // Ngăn form tự gửi đi
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+            
+            // Kiểm tra xem có nhập đủ không (phòng trường hợp trình duyệt không báo)
+            if (!username || !password) {
+                 displayMessage('Please enter both username and password.', false);
+                 return; 
+            }
+
+            displayMessage('Logging in...', true); // Hiển thị đang đăng nhập
+            
+            try {
+                const response = await fetch(`${BACKEND_URL}/auth/login`, { // Gọi API Login
+                    method: 'POST', 
+                    headers: { 
+                        'Content-Type': 'application/json' 
+                    },
+                    body: JSON.stringify({ username: username, password: password }) // Gửi username và password
+                });
+
+                // Luôn cố gắng đọc phản hồi JSON, ngay cả khi có lỗi HTTP
+                const data = await response.json(); 
+
+                // Kiểm tra xem yêu cầu có thành công không (status 2xx)
+                if (!response.ok) {
+                    // Nếu không thành công, ném lỗi với message từ backend hoặc status code
+                    throw new Error(data.message || `Login failed with status: ${response.status}`);
+                }
+                
+                // === Nếu thành công: LƯU TOKEN VÀ USERNAME ===
+                localStorage.setItem('token', data.token); 
+                localStorage.setItem('currentUser', data.username);
+                
+                displayMessage(`Welcome back, ${data.username}! Redirecting...`, true); // Thông báo thành công
+                // Chuyển hướng về trang chủ sau 1.5 giây
+                setTimeout(() => { 
+                    window.location.href = 'index.html'; 
+                }, 1500); 
+                
+            } catch (error) {
+                // === HIỂN THỊ LỖI ===
+                // Hiển thị message lỗi bắt được từ 'throw new Error' hoặc lỗi mạng
+                console.error("Login Error:", error); // Ghi log lỗi ra console (hữu ích nếu có thể xem)
+                displayMessage(error.message, false); // Hiển thị lỗi cho người dùng
+            }
+        });
+
+        // === Logic Đăng ký Gọi API Thật (giữ nguyên) ===
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('reg-username').value;
+            const password = document.getElementById('reg-password').value;
+             if (!username || !password) {
+                 displayMessage('Please enter both username and password for registration.', false);
+                 return; 
+             }
+            displayMessage('Registering...', true);
+            try {
+                const response = await fetch(`${BACKEND_URL}/auth/register`, { 
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: username, password: password })
+                });
+                const data = await response.json();
+                 if (!response.ok) {
+                    throw new Error(data.message || `Registration failed with status: ${response.status}`);
+                 }
+                displayMessage(data.message, true); 
+                setTimeout(() => { toggleForm('login'); }, 2000); 
+            } catch (error) {
+                 console.error("Register Error:", error);
+                displayMessage(error.message, false);
+            }
+        });
+
+        // Đảm bảo hàm toggleForm có thể được gọi từ HTML
+        window.toggleForm = toggleForm;
+    </script>

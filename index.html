@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="vi" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pháo Đài Của Ngài</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'prince-dark': '#1a1a1a',
+                        'prince-lightdark': '#2c2c2c',
+                        'prince-red': '#e53e3e',
+                        'prince-text': '#f7fafc',
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        /* Tùy chỉnh thanh cuộn */
+        #chat-window::-webkit-scrollbar { width: 6px; }
+        #chat-window::-webkit-scrollbar-track { background: #1a1a1a; border-radius: 10px; }
+        #chat-window::-webkit-scrollbar-thumb { background: #555; border-radius: 10px; }
+        #chat-window::-webkit-scrollbar-thumb:hover { background: #e53e3e; }
+
+        /* Ẩn/hiện mượt mà */
+        .hidden { display: none; }
+    </style>
+</head>
+<body class="bg-prince-dark flex items-center justify-center min-h-screen font-sans text-prince-text">
+
+    <div class="w-full max-w-lg">
+
+        <div id="auth-container">
+            <div id="login-view">
+                <div class="bg-prince-lightdark p-8 rounded-2xl shadow-2xl w-full border border-gray-700">
+                    <h2 class="text-3xl font-bold text-center mb-6 text-white">Đăng Nhập Pháo Đài</h2>
+                    <form id="login-form" class="space-y-4">
+                        <input 
+                            type="email" 
+                            id="login-email" 
+                            placeholder="Email"
+                            required
+                            class="w-full p-3 border border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-prince-red transition bg-gray-700 text-white"
+                        >
+                        <input 
+                            type="password" 
+                            id="login-password" 
+                            placeholder="Mật khẩu"
+                            required
+                            class="w-full p-3 border border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-prince-red transition bg-gray-700 text-white"
+                        >
+                        <p id="login-error" class="text-prince-red text-center text-sm"></p>
+                        <button 
+                            type="submit"
+                            id="login-button"
+                            class="w-full bg-prince-red text-white font-semibold px-6 py-3 rounded-xl shadow-md hover:bg-red-700 transition transform active:scale-95 focus:outline-none focus:ring-2 focus:ring-prince-red focus:ring-offset-2"
+                        >
+                            Vào Cổng
+                        </button>
+                    </form>
+
+                    <p class="text-center text-gray-400 text-sm mt-4">
+                        <span id="show-forgot-password" class="font-medium text-prince-red hover:underline cursor-pointer">Quên mật khẩu?</span>
+                    </p>
+
+                    <p class="text-center text-gray-400 text-sm mt-6">
+                        Chưa có danh tính? 
+                        <span id="show-register" class="font-medium text-prince-red hover:underline cursor-pointer">Xin gia nhập.</span>
+                    </p>
+                </div>
+            </div>
+
+            <div id="register-view" class="hidden">
+                <div class="bg-prince-lightdark p-8 rounded-2xl shadow-2xl w-full border border-gray-700">
+                    <h2 class="text-3xl font-bold text-center mb-6 text-white">Xin Gia Nhập</h2>
+                    <form id="register-form" class="space-y-4">
+                        <input 
+                            type="text" 
+                            id="register-username" 
+                            placeholder="Username (Danh tính)"
+                            required
+                            class="w-full p-3 border border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-prince-red transition bg-gray-700 text-white"
+                        >
+                        <input 
+                            type="email" 
+                            id="register-email" 
+                            placeholder="Email"
+                            required
+                            class="w-full p-3 border border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-prince-red transition bg-gray-700 text-white"
+                        >
+                        <input 
+                            type="password" 
+                            id="register-password" 
+                            placeholder="Mật khẩu (ít nhất 6 ký tự)"
+                            required
+                            minlength="6"
+                            class="w-full p-3 border border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-prince-red transition bg-gray-700 text-white"
+                        >
+                        <p id="register-error" class="text-prince-red text-center text-sm"></p>
+                        <button 
+                            type="submit"
+                            id="register-button"
+                            class="w-full bg-prince-red text-white font-semibold px-6 py-3 rounded-xl shadow-md hover:bg-red-700 transition transform active:scale-95 focus:outline-none focus:ring-2 focus:ring-prince-red focus:ring-offset-2"
+                        >
+                            Tạo Danh Tính
+                        </button>
+                    </form>
+                    <p class="text-center text-gray-400 text-sm mt-6">
+                        Đã có danh tính? 
+                        <span id="show-login" class="font-medium text-prince-red hover:underline cursor-pointer">Đăng nhập.</span>
+                    </p>
+                </div>
+            </div>
+
+            <div id="forgot-password-view" class="hidden">
+                <div class="bg-prince-lightdark p-8 rounded-2xl shadow-2xl w-full border border-gray-700">
+                    <h2 class="text-3xl font-bold text-center mb-6 text-white">Lấy Lại Mật Khẩu</h2>
+                    <form id="forgot-password-form" class="space-y-4">
+                        <input 
+                            type="email" 
+                            id="forgot-email" 
+                            placeholder="Email đã đăng ký"
+                            required
+                            class="w-full p-3 border border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-prince-red transition bg-gray-700 text-white"
+                        >
+                        <p id="forgot-message" class="text-center text-sm"></p>
+                        <button 
+                            type="submit"
+                            id="forgot-button"
+                            class="w-full bg-prince-red text-white font-semibold px-6 py-3 rounded-xl shadow-md hover:bg-red-700 transition transform active:scale-95 focus:outline-none focus:ring-2 focus:ring-prince-red focus:ring-offset-2"
+                        >
+                            Gửi link Reset
+                        </button>
+                    </form>
+                    <p class="text-center text-gray-400 text-sm mt-6">
+                        Nhớ lại mật khẩu? 
+                        <span id="show-login-from-forgot" class="font-medium text-prince-red hover:underline cursor-pointer">Đăng nhập.</span>
+                    </p>
+                </div>
+            </div>
+            
+        </div> <div id="chat-container" class="hidden">
+            <div class="bg-prince-lightdark w-full shadow-2xl rounded-2xl p-6 flex flex-col h-[90vh] md:h-[80vh] border border-gray-700">
+                
+                <div class="border-b border-gray-700 pb-4 mb-4 flex justify-between items-center">
+                    <div>
+                        <h1 class="text-3xl font-bold text-white">Thế Giới Của Ngài</h1>
+                        <p class="text-gray-400 text-sm">
+                            Username: <span id="username-display" class="font-medium text-prince-red">...</span>
+                        </p>
+                    </div>
+                    
+                    <div class="flex items-center">
+                        <a href="wiki.html" 
+                           target="_blank" 
+                           class="text-white font-medium hover:text-prince-red transition mr-5">
+                           Vào Wiki
+                        </a>
+                        <button
+                            id="logout-button"
+                            class="bg-gray-700 text-white text-sm font-semibold px-4 py-2 rounded-xl shadow-md hover:bg-gray-600 transition transform active:scale-95 focus:outline-none"
+                        >
+                            Đăng xuất
+                        </button>
+                    </div>
+                </div>
+
+                <div id="chat-window" class="flex-1 space-y-4 p-4 overflow-y-auto bg-prince-dark rounded-lg border border-gray-700">
+                    <div class="text-center text-gray-500">Đang tải...</div>
+                </div>
+
+                <form id="message-form" class="mt-6 flex space-x-3">
+                    <input 
+                        type="text" 
+                        id="message-input" 
+                        placeholder="Nhập tin nhắn..."
+                        class="flex-1 p-3 border border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-prince-red transition bg-gray-700 text-white"
+                    >
+                    <button 
+                        id="send-button"
+                        type="submit"
+                        class="bg-prince-red text-white font-semibold px-6 py-3 rounded-xl shadow-md hover:bg-red-700 transition transform active:scale-95 focus:outline-none"
+                    >
+                        Gửi
+                    </button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <script type="module">
+        // Import các hàm cần thiết
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { 
+            getAuth, 
+            onAuthStateChanged,
+            createUserWithEmailAndPassword,
+            signInWithEmailAndPassword,
+            signOut,
+            signInWithCustomToken,
+            sendPasswordResetEmail
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { 
+            getFirestore, 
+            collection, 
+            addDoc, 
+            query, 
+            onSnapshot, 
+            doc,
+            getDoc,
+            setDoc,
+            setLogLevel 
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // --- CÀI ĐẶT FIREBASE (Của Ngài) ---
+        
+        const firebaseConfig = {
+          apiKey: "AIzaSyArK9mIQekzM45oAqE9-s1sB9SLna0L-zE",
+          authDomain: "flutter-ai-playground-5bd57.firebaseapp.com",
+          projectId: "flutter-ai-playground-5bd57",
+          storageBucket: "flutter-ai-playground-5bd57.firebasestorage.app",
+          messagingSenderId: "1068190871545",
+          appId: "1:1068190871545:web:ac63b37befad9ef920d728"
+        };
+        
+        const appId = firebaseConfig.appId; 
+        const initialAuthToken = null;
+
+        let app, db, auth;
+        let currentUserId = null;
+        let currentUsername = null;
+
+        // DOM Elements
+        const authContainer = document.getElementById('auth-container');
+        const chatContainer = document.getElementById('chat-container');
+        const loginView = document.getElementById('login-view');
+        const registerView = document.getElementById('register-view');
+        const chatWindow = document.getElementById('chat-window');
+        
+        // Khởi tạo
+        if (firebaseConfig.apiKey) {
+            try {
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+                setLogLevel('Debug');
+            } catch (e) {
+                console.error("Lỗi khởi tạo Firebase:", e);
+            }
+        } else {
+            console.error("Không tìm thấy Firebase config.");
+            document.body.innerHTML = '<div class="text-center text-red-500 p-10">Lỗi cấu hình. Không thể tải app.</div>';
+        }
+
+        // --- ĐƯỜNG DẪN COLLECTIONS ---
+        const PROFILES_COLLECTION_PATH = `/artifacts/${appId}/public/data/user_profiles`;
+        const CHAT_COLLECTION_PATH = `/artifacts/${appId}/public/data/chat_messages_v2`;
+
+        // --- BỘ ĐIỀU KHIỂN XÁC THỰC TRUNG TÂM ---
+        
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                // ĐÃ ĐĂNG NHẬP (Dùng khi tải lại trang)
+                currentUserId = user.uid;
+                await fetchUserProfile(currentUserId); 
+                
+                authContainer.classList.add('hidden'); 
+                chatContainer.classList.remove('hidden'); 
+                
+                document.getElementById('username-display').textContent = currentUsername || '...';
+                loadMessages(); 
+
+            } else {
+                // ĐÃ ĐĂNG XUẤT
+                currentUserId = null;
+                currentUsername = null;
+
+                authContainer.classList.remove('hidden'); 
+                chatContainer.classList.add('hidden'); 
+            }
+        });
+
+        // --- CHỨC NĂNG XÁC THỰC ---
+
+        // 1. Đăng ký
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('register-username').value.trim();
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const errorEl = document.getElementById('register-error');
+            
+            if (username.length < 3) {
+                errorEl.textContent = 'Username phải có ít nhất 3 ký tự.';
+                return;
+            }
+
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+                
+                const userProfileRef = doc(db, PROFILES_COLLECTION_PATH, user.uid);
+                await setDoc(userProfileRef, {
+                    username: username
+                });
+                
+            } catch (error) {
+                console.error("Lỗi đăng ký:", error.code);
+                errorEl.textContent = getAuthErrorMessage(error.code);
+            }
+        });
+
+        // 2. Đăng nhập (*** ĐÂY LÀ PHẦN ĐÃ SỬA LỖI LẦN 2 ***)
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const errorEl = document.getElementById('login-error');
+            const loginButton = document.getElementById('login-button');
+            
+            loginButton.disabled = true; // Vô hiệu hoá nút
+            errorEl.textContent = "Đang đăng nhập...";
+
+            try {
+                // 1. Cố gắng đăng nhập
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                
+                // 2. ĐĂNG NHẬP THÀNH CÔNG!
+                const user = userCredential.user;
+                currentUserId = user.uid;
+
+                // *** THAY ĐỔI LỚN Ở ĐÂY ***
+                // 3. Ẩn cổng, hiện pháo đài NGAY LẬP TỨC
+                authContainer.classList.add('hidden');
+                chatContainer.classList.remove('hidden');
+                
+                // 4. SAU ĐÓ, mới bắt đầu tải dữ liệu (không làm kẹt nữa)
+                try {
+                    await fetchUserProfile(currentUserId); // Tải profile
+                    document.getElementById('username-display').textContent = currentUsername || '...';
+                    loadMessages(); // Bắt đầu tải chat
+                } catch (fetchError) {
+                    // Nếu tải profile/chat lỗi, ít nhất Ngài cũng đã vào được
+                    console.error("Lỗi khi tải profile/chat:", fetchError);
+                    document.getElementById('username-display').textContent = 'Lỗi tải';
+                }
+
+            } catch (error) {
+                // Đăng nhập thất bại
+                console.error("Lỗi đăng nhập:", error.code);
+                errorEl.textContent = getAuthErrorMessage(error.code);
+                loginButton.disabled = false; // Kích hoạt lại nút
+            }
+        });
+
+        // 3. Đăng xuất
+        document.getElementById('logout-button').addEventListener('click', () => {
+            signOut(auth);
+        });
+
+        // 4. Chuyển đổi qua lại
+        const forgotPasswordView = document.getElementById('forgot-password-view');
+
+        document.getElementById('show-register').addEventListener('click', () => {
+            loginView.classList.add('hidden');
+            registerView.classList.remove('hidden');
+            forgotPasswordView.classList.add('hidden');
+            document.getElementById('login-error').textContent = '';
+        });
+        document.getElementById('show-login').addEventListener('click', () => {
+            loginView.classList.remove('hidden');
+            registerView.classList.add('hidden');
+            forgotPasswordView.classList.add('hidden');
+            document.getElementById('register-error').textContent = '';
+        });
+        
+        document.getElementById('show-forgot-password').addEventListener('click', () => {
+            loginView.classList.add('hidden');
+            registerView.classList.add('hidden');
+            forgotPasswordView.classList.remove('hidden');
+            document.getElementById('login-error').textContent = '';
+        });
+        document.getElementById('show-login-from-forgot').addEventListener('click', () => {
+            loginView.classList.remove('hidden');
+            registerView.classList.add('hidden');
+            forgotPasswordView.classList.add('hidden');
+            if(document.getElementById('forgot-message')) {
+                document.getElementById('forgot-message').textContent = '';
+            }
+        });
+
+        // --- 5. CHỨC NĂNG QUÊN MẬT KHẨU ---
+        const forgotForm = document.getElementById('forgot-password-form');
+        if (forgotForm) {
+            forgotForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = document.getElementById('forgot-email').value;
+                const messageEl = document.getElementById('forgot-message');
+                const button = document.getElementById('forgot-button');
+
+                button.disabled = true;
+                messageEl.textContent = 'Đang gửi link...';
+                messageEl.className = 'text-gray-400 text-center text-sm'; 
+
+                try {
+                    await sendPasswordResetEmail(auth, email);
+                    messageEl.textContent = 'Gửi link thành công! Vui lòng kiểm tra email.';
+                    messageEl.className = 'text-green-400 text-center text-sm';
+                    
+                } catch (error) {
+                    console.error("Lỗi gửi link reset:", error.code);
+                    messageEl.className = 'text-prince-red text-center text-sm';
+                    if (error.code === 'auth/user-not-found') {

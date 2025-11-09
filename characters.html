@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Characters | My AUS Wiki</title>
+    <link rel="stylesheet" href="style.css">
+    <style> 
+        /* CSS nội bộ characters.html giữ nguyên */
+        .character-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; } /* Cải thiện responsive */
+        .character-card { background-color: #2C3A47; border: 1px solid #7A287E; border-radius: 8px; padding: 15px; text-align: center; }
+        .character-card img { width: 100%; max-width: 250px; height: auto; border-radius: 5px; border: 2px solid #574B90; margin-bottom: 10px; }
+        .character-card h3 { color: #E6244C; margin-top: 0; }
+        /* Bỏ media query cũ vì repeat(auto-fit) đã xử lý */
+    </style>
+</head>
+<body>
+    <header><h1>Dusttale</h1></header>
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="aus.html">AU List</a></li>
+            <li><a href="create-aus.html">Create AU</a></li>
+            <li><a href="characters.html" class="active">Characters</a></li>
+            <li><a href="contribute.html">Contribute</a></li>
+             </ul>
+    </nav>
+    <main>
+        <h2>Main Characters</h2>
+        <p>Characters appearing in the Dusttale AU.</p>
+        <div class="character-grid">
+             <article class="character-card">...</article>
+             <article class="character-card">...</article>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2025 Dust!Sans [Elliot Davidson]. All rights reserved.</p>
+        <p>Website developed based on...</p>
+    </footer>
+
+    <script>
+         function getCurrentUser() { /*...*/ return localStorage.getItem('currentUser'); }
+         function logoutUser() { /*...*/ localStorage.removeItem('currentUser'); localStorage.removeItem('token'); window.location.reload(); }
+         function updateNavBar() { /*...*/ 
+             const user = getCurrentUser(); const navUl = document.querySelector('nav ul');
+             const authItems = navUl.querySelectorAll('.auth-item'); authItems.forEach(item => item.remove());
+             if (user) {
+                 const userDropdown = document.createElement('li'); userDropdown.className = 'auth-item dropdown';
+                 const userNameLink = document.createElement('a'); userNameLink.href = "#"; userNameLink.textContent = user;
+                 userNameLink.onclick = function(event) { event.preventDefault(); toggleUserMenu(); };
+                 userDropdown.appendChild(userNameLink);
+                 const dropdownContent = document.createElement('ul'); dropdownContent.className = 'dropdown-content'; dropdownContent.id = 'user-menu-content';
+                 const logoutItem = document.createElement('li'); logoutItem.innerHTML = `<a href="#" onclick="logoutUser()">Logout</a>`; dropdownContent.appendChild(logoutItem);
+                 userDropdown.appendChild(dropdownContent); navUl.appendChild(userDropdown);
+             } else {
+                 const loginItem = document.createElement('li'); loginItem.className = 'auth-item';
+                 loginItem.innerHTML = `<li><a href="auth.html">Login / Register</a></li>`; navUl.appendChild(loginItem);
+             }
+         }
+         function toggleUserMenu() { /*...*/ const menuContent = document.getElementById('user-menu-content'); if (menuContent) { menuContent.classList.toggle('show'); } }
+         window.onclick = function(event) { /*...*/ if (!event.target.matches('.dropdown > a')) { const dropdowns = document.getElementsByClassName("dropdown-content"); for (let i = 0; i < dropdowns.length; i++) { if (dropdowns[i].classList.contains('show')) { dropdowns[i].classList.remove('show'); } } } }
+         window.logoutUser = logoutUser;
+         document.addEventListener('DOMContentLoaded', updateNavBar); // Gọi khi trang tải xong
+     </script>
+</body>
+</html>

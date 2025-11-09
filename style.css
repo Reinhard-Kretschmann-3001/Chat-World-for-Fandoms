@@ -1,0 +1,232 @@
+/*=====================================
+  BẢNG MÀU DUST!SANS: Quyết Tâm Tím
+  - Đỏ Quyết Tâm: #E6244C 
+  - Tím Đôi Mắt: #7A287E 
+  - Xám Tro (Nền): #444C5C 
+  - Trắng Linh Hồn: #F0F0F0 
+=====================================*/
+
+/* --- Cài đặt chung --- */
+body {
+    background-color: #444C5C;      
+    color: #F0F0F0;                 
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* --- 1. Tiêu đề --- */
+header {
+    background-color: #2C3A47;      
+    padding: 15px;
+    text-align: center;
+    border-bottom: 3px solid #7A287E; 
+}
+
+header h1 {
+    color: #E6244C;                 
+    margin: 0;
+    font-size: 2em;
+}
+
+/* --- 2. Thanh điều hướng --- */
+nav {
+    background-color: #7A287E;      
+    padding: 10px 0;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+}
+
+nav li {
+    display: inline-block;
+    margin: 0 10px; /* Giảm margin để vừa hơn trên mobile */
+}
+
+nav a {
+    color: #F0F0F0;                 
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.1em;
+    padding: 10px 15px; /* Thêm padding để dễ bấm */
+    display: inline-block; /* Cần thiết cho padding */
+}
+
+nav a:hover {
+    color: #E6244C;                 
+}
+
+nav a.active {
+    color: #E6244C;                 
+}
+
+/* --- 3. Nội dung chính --- */
+main {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 25px;
+    background-color: #2C3A47;      
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5); 
+}
+
+article h2, main h2 {
+    color: #E6244C;                 
+    border-bottom: 2px solid #7A287E; 
+    padding-bottom: 5px;
+}
+
+article h3, main h3 {
+    color: #F0F0F0;
+}
+
+.page-image {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 15px auto;
+    border: 3px solid #7A287E;      
+    border-radius: 5px;
+}
+
+article a, main a {
+    color: #E6244C;                 
+    text-decoration: none;
+}
+
+article a:hover, main a:hover {
+    text-decoration: underline;
+    color: #F0F0F0;                 
+}
+
+/* --- 4. CSS cho Infobox (Trang chủ) --- */
+.infobox {
+    float: right;
+    width: 280px;
+    margin-left: 20px;
+    margin-bottom: 15px;
+    background-color: #574B90;      
+    border: 2px solid #E6244C;      
+    padding: 10px;
+    font-family: 'Courier New', monospace;
+    color: #F0F0F0;                 
+    box-shadow: 0 0 15px rgba(230, 36, 76, 0.9); 
+}
+/* ... (Giữ nguyên phần còn lại của infobox) ... */
+
+/* --- 5. Chân trang --- */
+footer {
+    text-align: center;
+    padding: 20px;
+    margin-top: 20px;
+    background-color: #2C3A47;
+    color: #A4B0BE; 
+    font-size: 0.9em;
+    border-top: 1px solid #7A287E;  
+    clear: both;
+}
+
+/* --- 6. Responsive Design --- */
+@media (max-width: 768px) {
+    .infobox {
+        float: none;
+        width: 100%;
+        margin-left: 0;
+        box-sizing: border-box; /* Đảm bảo padding không làm tăng width */
+    }
+    main {
+        padding: 15px;
+        margin: 10px;
+    }
+    nav li {
+        margin: 0 5px; /* Giảm thêm margin cho nav trên mobile */
+    }
+    nav a {
+        padding: 8px 10px; /* Giảm padding cho nav link */
+        font-size: 1em; /* Giảm cỡ chữ nav link */
+    }
+}
+
+/* --- 7. User Dropdown Menu --- */
+nav ul li.dropdown {
+  position: relative; 
+  display: inline-block; 
+}
+
+/* Kiểu dáng cho tên người dùng (phần kích hoạt menu) */
+nav ul li.dropdown > a {
+  cursor: pointer; 
+  color: #b36eff; /* Màu tím nổi bật (có thể đổi) */
+  font-weight: bold;
+  padding: 10px 15px; /* Giữ khoảng cách như nav a khác */
+  display: inline-block; 
+}
+/* Bỏ hiệu ứng hover mặc định của nav a cho tên user */
+nav ul li.dropdown > a:hover {
+  color: #b36eff; 
+}
+
+/* Menu xổ xuống (ẩn ban đầu) */
+nav ul li.dropdown .dropdown-content {
+  display: none; 
+  position: absolute; 
+  background-color: #2C3A47; /* Màu nền tối giống main */
+  min-width: 160px; 
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.5);
+  z-index: 1; 
+  border-radius: 4px;
+  right: 0; /* Căn lề phải với tên người dùng */
+  margin-top: 5px; 
+  list-style: none; /* Bỏ dấu chấm tròn của ul */
+  padding: 0; /* Bỏ padding mặc định của ul */
+  text-align: left; /* Căn chữ trái trong menu */
+}
+
+/* Các liên kết (li > a) bên trong menu xổ xuống */
+nav ul li.dropdown .dropdown-content li {
+    display: block; /* Hiển thị mỗi li trên một dòng */
+    margin: 0; /* Reset margin */
+}
+nav ul li.dropdown .dropdown-content li a {
+  color: #F0F0F0; 
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block; 
+  font-size: 0.95em;
+  font-weight: normal; /* Bỏ in đậm */
+  white-space: nowrap; 
+}
+
+/* Đổi màu khi di chuột qua liên kết trong menu */
+nav ul li.dropdown .dropdown-content li a:hover {
+  background-color: #444C5C; 
+  color: #E6244C; 
+}
+
+/* Class để hiển thị menu (sẽ được thêm/xóa bằng JS) */
+nav ul li.dropdown .dropdown-content.show {
+  display: block;
+}
+/* =====================================
+   SỬA LỖI CHO LINK TRONG CONTACT.HTML 
+   ===================================== */
+
+/* Mục tiêu: Các link <a> nằm trong danh sách <li> bên trong <main>
+  (Như các link Email và Discord trong contact.html)
+*/
+main ul li a {
+    color: #99cfff; /* Màu Xanh dương nhạt (dễ đọc trên nền tối) */
+    text-decoration: underline; /* LUÔN CÓ GẠCH CHÂN */
+    font-weight: bold; /* In đậm cho dễ thấy */
+}
+
+/* Đổi màu khi rê chuột qua (Giữ màu đỏ chủ đạo của Ngài)
+*/
+main ul li a:hover {
+    color: #E6244C;
+    text-decoration: underline; /* Giữ gạch chân khi rê chuột */
+}
